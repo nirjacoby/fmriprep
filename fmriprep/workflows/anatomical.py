@@ -1133,14 +1133,14 @@ def init_segs_to_native_wf(name='segs_to_native', segmentation='aseg'):
     fssource = pe.Node(nio.FreeSurferSource(), name='fs_datasource')
     tonative = pe.Node(fs.Label2Vol(), name='tonative')
     tonii = pe.Node(fs.MRIConvert(out_type='niigz', resample_type='nearest'), name='tonii')
-
+        
     if segmentation.startswith('aparc'):
         if segmentation == 'aparc_aseg':
-            def _sel(x): return x[0]
+            def _sel(x): return [parc for parc in x if 'aparc+' in parc][0]
         elif segmentation == 'aparc_a2009s':
-            def _sel(x): return x[1]
+            def _sel(x): return [parc for parc in x if 'a2009s+' in parc][0]
         elif segmentation == 'aparc_dkt':
-            def _sel(x): return x[2]
+            def _sel(x): return [parc for parc in x if 'DKTatlas+' in parc][0]
         segmentation = (segmentation, _sel)
 
     workflow.connect([
